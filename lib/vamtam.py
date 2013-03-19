@@ -1,5 +1,15 @@
+import os
+import errno
 import string
 import random
+
+def mkdir_p(path, mode=0o775, exist_ok=True):
+    try:
+        os.makedirs(path, mode, exist_ok)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else: raise
 
 def confirm(prompt_str="Confirm", allow_empty=False, default=False):
   fmt = (prompt_str, 'y', 'n') if default else (prompt_str, 'n', 'y')
@@ -9,7 +19,7 @@ def confirm(prompt_str="Confirm", allow_empty=False, default=False):
     prompt = '%s %s|%s: ' % fmt
  
   while True:
-    ans = raw_input(prompt).lower()
+    ans = input(prompt).lower()
  
     if ans == '' and allow_empty:
       return default
@@ -18,7 +28,7 @@ def confirm(prompt_str="Confirm", allow_empty=False, default=False):
     elif ans == 'n':
       return False
     else:
-      print 'Please enter y or n.'
+      print('Please enter y or n.')
 
 def option(prompt_str="", allow_empty=False, default=False):
   fmt = (prompt_str, default) if default else (prompt_str, '')
@@ -28,7 +38,7 @@ def option(prompt_str="", allow_empty=False, default=False):
     prompt = '%s %s: ' % fmt
 
   while True:
-    ans = raw_input(prompt).lower()
+    ans = input(prompt).lower()
  
     if allow_empty:
       if ans == '':

@@ -1,7 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import lib.vamtam as vamtam
+from glob import glob
+from colorama import Fore, Back, Style
 
 vhost_template = '''
 # domain: %(domain)s
@@ -24,35 +26,37 @@ vhost_template = '''
 </VirtualHost>
 '''.strip()
 
-print 'Setting up apache vhost.'
+print("Setting up apache vhost.")
 domain = vamtam.option("Enter domain")
-home = vamtam.option("Enter home directory", True, ('/home/vamtam/public/%s' % domain))
+home = vamtam.option("Enter home directory", True, os.path.expanduser('~/public/%s' % domain))
 if vamtam.confirm("Creating vhost configuration for %s at %s" % (domain, home), True):
-  os.system("mkdir -p ~/public/%s/{public,log,backup}" % domain)
+  vamtam.mkdir_p("%s/public" % home)
+  vamtam.mkdir_p("%s/backup" % home)
+  vamtam.mkdir_p("%s/log" % home)
+  os.system("mkdir -p %s/{public,backup,log}" % home)
   os.system("sudo chown -R www-data:www-data ~/public/%s/public" % domain)
-  os.system("sudo chmod -R 775 ~/public/%s/public" % domain)
 
   mydict = {
     'domain': domain,
     'home': home
   }
 
-  myFile = open('/tmp/%s' % domain, 'w')
-  myFile.write(vhost_template % mydict)
-  myFile.close()
+  vhost = open(('/tmp/%s' % domain), 'w')
+  vhost.write(vhost_template % mydict)
+  vhost.close()
 
-  os.system("sudo mv /tmp/%s /etc/apache2/sites-available/")
+  os.system("sudo mv /tmp/%s /etc/apache2/sites-available/" % domain)
   os.system("sudo a2ensite %s" % domain)
 
-  print ''
+  print('')
 
-  print render('Created vhost %(RED)s%(BOLD)s'+domain+'%(NORMAL)s in '+home)
+  print('Created vhost '+Fore.RED+domain+Style.RESET_ALL+' in '+home)
 
   if(vamtam.confirm("Restart apache?", True)):
     os.system("sudo service apache2 restart")
   else:
-    print "Please restart apache manually"
+    print("Please restart apache manually")
 
 else:
-  print "abort"
+  print("abort")
   exit(0)

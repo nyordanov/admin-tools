@@ -1,12 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import getpass
 import lib.vamtam as vamtam
 import MySQLdb as MS
-from lib.terminal import render
+from colorama import Fore, Back, Style
 
-print "Create database", ""
+print("Create database", "")
 
 mysql_user = vamtam.option("Mysql user")
 mysql_pass = getpass.getpass("%s password:" % mysql_user)
@@ -31,12 +31,12 @@ if(vamtam.confirm('Creating database %s with user %s' % (mysql_database, mysql_u
 
 		cursor.execute('flush privileges');
 
-		print ""
-		print render('Created database %(RED)s%(BOLD)s'+mysql_database+'%(NORMAL)s')
-		print render('Access with user %(RED)s%(BOLD)s'+new_user+'%(NORMAL)s and %(RED)s%(BOLD)s'+new_pass+'%(NORMAL)s')
+		print("")
+		print('Created database '+Fore.RED+mysql_database++Style.RESET_ALL)
+		print('Access with user '+Fore.RED+new_user+Style.RESET_ALL' and '+Fore.RED+new_pass+Style.RESET_ALL)
 	else:
-		print render('Created database %(RED)s%(BOLD)s%(dbname)s%(NORMAL)s')
+		print('Created database '+Fore.RED+mysql_database+Style.RESET_ALL)
 		exit(0)
 else:
-	print "abort"
+	print("abort")
 	exit(0)
