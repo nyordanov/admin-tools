@@ -33,7 +33,6 @@ if vamtam.confirm("Creating vhost configuration for %s at %s" % (domain, home), 
   vamtam.mkdir_p("%s/public" % home)
   vamtam.mkdir_p("%s/backup" % home)
   vamtam.mkdir_p("%s/log" % home)
-  os.system("mkdir -p %s/{public,backup,log}" % home)
   os.system("sudo chown -R www-data:www-data ~/public/%s/public" % domain)
 
   mydict = {
